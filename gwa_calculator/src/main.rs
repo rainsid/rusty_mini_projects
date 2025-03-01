@@ -1,6 +1,6 @@
 use std::io::{self, Write};
 
-//create a struct 
+//create a struct
 struct Subject {
     title: String,
     grade: f64,
@@ -25,7 +25,9 @@ fn get_input(prompt: &str) -> String {
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("Failed to read input");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read input");
 
     input.trim().to_string()
 }
@@ -33,17 +35,16 @@ fn get_input(prompt: &str) -> String {
 fn calculate_average(subjects: &Vec<Subject>) -> f64 {
     let mut total_weight: f64 = 0.0;
     let mut total_units = 0;
-    
+
     for subj in subjects {
-        total_weight =  total_weight + subj.weight;
+        total_weight = total_weight + subj.weight;
         total_units = total_units + subj.units;
     }
-   
-    return total_weight / total_units as f64;
 
+    return total_weight / total_units as f64;
 }
 fn main() {
-    //create a vector of Subjects struct 
+    //create a vector of Subjects struct
     let mut subjects: Vec<Subject> = Vec::new();
 
     let mut count = 1;
@@ -64,19 +65,21 @@ fn main() {
 
         let title = format!("Subject {}", count);
         count = count + 1;
-        
-        subjects.push(Subject::new(&title, grade, units));
 
+        subjects.push(Subject::new(&title, grade, units));
     }
 
     //print the vector of struct
     println!("Subjects");
 
     for subject in &subjects {
-        println!("{}: Grade:{}, Units:{}, Weight:{}", subject.title, subject.grade, subject.units, subject.weight);
+        println!(
+            "{}: Grade:{}, Units:{}, Weight:{}",
+            subject.title, subject.grade, subject.units, subject.weight
+        );
     }
-    
+
     //calculate the average of the weight
     let average = calculate_average(&subjects);
-    println!("GWA: {:2}", average);
+    println!("GWA: {:.2}", average);
 }
