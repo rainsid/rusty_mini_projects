@@ -1,3 +1,4 @@
+use rand::Rng;
 use std::env;
 
 fn main() {
@@ -12,7 +13,7 @@ fn main() {
 
     //validate input
     // args[0] is the program path
-    let pass_length: u8 = match args[1].parse() {
+    let pass_length: usize = match args[1].parse() {
         Ok(n) => n,
         Err(_) => {
             eprintln!("Error: Password length must be a number between 8 and 32");
@@ -51,10 +52,11 @@ fn main() {
         std::process::exit(1);
     }
 
-    generate_password(&pass_length, &pass_complexity);
+    let password = generate_password(&pass_length, &pass_complexity);
+    println!("Generated password: {}", password);
 }
 
-fn generate_password(length: &u8, &complexity: &u8) {
+fn generate_password(length: &usize, &complexity: &u8) -> String {
     let lowercase = "abcdefghijklmnopqrstuvwxyz";
     let uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let digits = "0123456789";
@@ -72,5 +74,13 @@ fn generate_password(length: &u8, &complexity: &u8) {
         charset.push_str(special_chars);
     }
 
-    println!("{}", charset);
+    let mut rng = rand::thread_rng();
+    let password: String = (0..*length)
+        .map(|_| {
+            let index = rng.gen_range(0..charset.len());
+            charset.chars().nth(index).unwrap()
+        })
+        .collect();
+
+    password
 }
