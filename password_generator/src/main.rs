@@ -53,10 +53,10 @@ fn main() {
     }
 
     let password = generate_password(&pass_length, &pass_complexity);
-    println!("Generated password: {}", password);
+    println!("{}", password);
 }
 
-fn generate_password(length: &usize, &complexity: &u8) -> String {
+fn generate_password(length: &usize, complexity: &u8) -> String {
     let lowercase = "abcdefghijklmnopqrstuvwxyz";
     let uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let digits = "0123456789";
@@ -64,16 +64,28 @@ fn generate_password(length: &usize, &complexity: &u8) -> String {
 
     let mut charset = String::from(lowercase);
 
-    if complexity >= 2 {
-        charset.push_str(uppercase);
+    // if complexity >= 2 {
+    //     charset.push_str(uppercase);
+    // }
+    // if complexity >= 3 {
+    //     charset.push_str(digits);
+    // }
+    // if complexity == 4 {
+    //     charset.push_str(special_chars);
+    // }
+    match complexity {
+        2 => charset.push_str(uppercase),
+        3 => {
+            charset.push_str(uppercase);
+            charset.push_str(digits);
+        }
+        4 => {
+            charset.push_str(uppercase);
+            charset.push_str(digits);
+            charset.push_str(special_chars);
+        }
+        _ => {}
     }
-    if complexity >= 3 {
-        charset.push_str(digits);
-    }
-    if complexity == 4 {
-        charset.push_str(special_chars);
-    }
-
     let mut rng = rand::thread_rng();
     let password: String = (0..*length)
         .map(|_| {

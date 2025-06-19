@@ -1,7 +1,11 @@
 [package]
-name = "password_generator"
+name = "passwordgen-cli"
 version = "0.1.0"
+description = "A simple cli password generator."
 edition = "2021"
+keywords = ["password", "generator", "security"]
+categories = ["command-line-utilities"]
+license = "MIT"
 
 [dependencies]
 rand = "0.8"
