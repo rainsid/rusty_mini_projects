@@ -18,7 +18,7 @@ fn main() {
                 match entry {
                     Ok(entry) => {
                         if let Some(s) = path_to_string(&entry.path()) {
-                            println!("{s}");
+                            println!("Removing metadata:\n\t{s}");
                             remove_metadata(&s);
                         }
                     }
@@ -36,5 +36,10 @@ fn path_to_string(path: &Path) -> Option<String> {
 }
 
 fn remove_metadata(path: &String) {
-    println!("{path}");
+    Command::new("exiftool")
+        .arg("-all=")
+        .arg("-overwrite_original")
+        .arg(path)
+        .output()
+        .expect("failed");
 }
