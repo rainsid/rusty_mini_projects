@@ -1,9 +1,6 @@
-use core::panic::PanicInfo;
 use std::env;
-use std::ffi::os_str;
 use std::fs;
 use std::path::Path;
-use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
@@ -20,6 +17,8 @@ fn main() {
                         if let Some(s) = path_to_string(&entry.path()) {
                             println!("Removing metadata:\n\t{s}");
                             remove_metadata(&s);
+                            println!("Compressing image:\n\t{s}");
+                            compress_image(&s);
                         }
                     }
 
@@ -41,5 +40,15 @@ fn remove_metadata(path: &String) {
         .arg("-overwrite_original")
         .arg(path)
         .output()
-        .expect("failed");
+        .expect("Metadata removal failed");
+}
+
+fn compress_image(path: &String) {
+    Command::new("magick")
+        .arg(path)
+        .arg("-quality")
+        .arg("70")
+        .arg(path)
+        .output()
+        .expect("Compressing image failed.");
 }
