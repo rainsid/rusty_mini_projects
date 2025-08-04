@@ -1,24 +1,28 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
+use std::process::Command;
 use std::{env, fs};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     let dir = &args[1];
     let coord_file = &args[2];
-    let mut coordinates: Vec<String>;
 
-    coordinates = read_coordinates_file(coord_file);
+    let coordinates = read_coordinates_file(coord_file);
 
     match fs::read_dir(dir) {
         Ok(entries) => {
+            let mut counter = 0;
             for entry in entries {
                 match entry {
                     Ok(entry) => {
                         if let Some(s) = path_to_string(&entry.path()) {
                             //geotag here
-                            println!("{s}");
+                            println!("counter:{counter}");
+                            geotag(&coordinates[counter], &s);
+                            println!("coordinates: {}", &coordinates[counter]);
+                            counter += 1;
                         }
                     }
 
@@ -45,4 +49,21 @@ fn read_coordinates_file(file_path: &String) -> Vec<String> {
     }
 
     coordinates
+}
+
+fn geotag(coordinates: &String, path: &String) {
+    let gps_arg = format!("-gpsposition={coordinates}");
+
+    let status = Command::new("exiftool")
+        .arg(gps_arg)
+        .arg(path)
+        .arg("-overwrite_original")
+        .status()
+        .expect("Failed to execute command");
+
+    if status.success() {
+        println!("Successfully updated GPS posisiton");
+    } else {
+        eprintln!("exiftool command failed: {status}");
+    }
 }
